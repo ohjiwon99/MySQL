@@ -67,6 +67,11 @@ order by (avg(salary)-min(salary)) desc;
 업무(JOBS)별로 최고임금과 최저임금의 차이를 출력해보세요.
 차이를 확인할 수 있도록 내림차순으로 정렬하세요*/
 
+select *
+from jobs
+group by job_id
+order by job_id desc;
+
 /*문제9
 2005년 이후 입사자중 관리자별로 평균급여 최소급여 최대급여를 알아보려고 한다.
 출력은 관리자별로 평균급여가 5000이상 중에 평균급여 최소급여 최대급여를 출력합니다.
