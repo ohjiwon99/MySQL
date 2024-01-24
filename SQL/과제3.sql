@@ -157,15 +157,7 @@ and e.manager_id=m.department_id;
 매니저가 없는 Steven도 표시합니다.
 (107명)*/
 
-select e.employee_id 사번,
-       e.first_name 이름,
-       d.department_name 부서명,
-       m.first_name manager_name
-from employees e, employees m, departments d
-where e.manager_id = m.employee_id
-and e.department_id = d.department_id;
-
-select e.employee_id 사번,
+select e.employee_id 사번, -- 107
        e.first_name 이름,
        d.department_name 부서명
        -- m.first_name manager_name
@@ -173,8 +165,6 @@ from employees e
 -- where e.manager_id = m.employee_id
 left outer join departments d
 on e.department_id = d.department_id;
-
-
 
 /*문제9-1.
 문제9 에서 부서가 없는 직원(Kimberely)도 표시하고.
@@ -185,3 +175,10 @@ on e.department_id = d.department_id;
 문제9 에서 부서가 없는 직원(Kimberely)도 표시하지 않고
 매니저가 없는 Steven도 표시하지 않습니다.
 (105명*/
+select e.employee_id 사번, -- 105
+       e.first_name 이름,
+       d.department_name 부서명,
+       m.first_name manager_name
+from employees e, employees m, departments d
+where e.manager_id = m.employee_id
+and e.department_id = d.department_id;
