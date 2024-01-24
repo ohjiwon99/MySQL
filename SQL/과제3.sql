@@ -137,18 +137,17 @@ and j.job_id like 'AC_ACCOUNT%';
 (countries_name) 그리고 지역구분(regions)의 이름(resion_name)까지 전부 출력해 보세요.
 (11건)*/
 -- 몰라 몰라 몰라 다시 풀거여 ㅡ.ㅡ
-select e.department_id 부서번호,
+select d.department_id 부서번호,
        d.department_name 부서이름,
-       m.first_name 매니저,
+       e.first_name 매니저,
        l.city 도시,
        c.country_name 나라이름,
        r.region_name 지역이름
-from employees e,employees m, departments d, locations l, countries c, regions r
-where e.department_id = d.department_id
-and d.location_id = l.location_id
-and l.country_id = c.country_id
-and c.region_id = r.region_id
-and e.manager_id=m.department_id;
+from employees e, departments d, locations l, countries c, regions r
+where e.employee_id = d.manager_id 
+and e.department_id = d.department_id 
+and d.location_id = l.location_id 
+and l.country_id = c.country_id and c.region_id = r.region_id;
 
 /*문제9.
 각 사원(employee)에 대해서 사번(employee_id), 이름(first_name), 부서명
@@ -159,17 +158,27 @@ and e.manager_id=m.department_id;
 
 select e.employee_id 사번, -- 107
        e.first_name 이름,
-       d.department_name 부서명
-       -- m.first_name manager_name
+       e.manager_id ,
+       d.department_name 부서명,
+       m.first_name 'manager_name',
+       m.manager_id
 from employees e
--- where e.manager_id = m.employee_id
-left outer join departments d
-on e.department_id = d.department_id;
+left outer join employees m on e.manager_id = m.employee_id
+left outer join departments d on d.department_id = e.department_id;
 
-/*문제9-1.
+/*문제9-1.1
 문제9 에서 부서가 없는 직원(Kimberely)도 표시하고.
 매니저가 없는 Steven도 표시하지 않습니다.
 (106명)*/
+select e.employee_id 사번, -- 107
+       e.first_name 이름,
+       e.manager_id ,
+       d.department_name 부서명,
+       m.first_name 'manager_name',
+       m.manager_id
+from employees e
+join employees m on e.manager_id = m.employee_id
+left outer join departments d on d.department_id = e.department_id;
 
 /*문제9-2.
 문제9 에서 부서가 없는 직원(Kimberely)도 표시하지 않고
