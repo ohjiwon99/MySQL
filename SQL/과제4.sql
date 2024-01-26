@@ -12,8 +12,12 @@ where salary <= (select avg(salary)
 /*문제2. --------------------------------------------------------------------
 평균월급 이상, 최대월급 이하의 월급을 받는 사원의
 직원번호(employee_id), 이름(first_name), 월급(salary), 평균월급, 최대월급을 월급의 오름차
-순으로 정렬하여 출력하세요
+순으로 정렬하여 출력하세요 **조금 어려웠음 나중에 다시 풀어보기!
 (51건)-------------------------------------------------------------------------*/
+-- 평균월급/최대월급
+select avg(salary),
+       max(salary)
+from employees;
 
 select employee_id,
        first_name,
@@ -34,26 +38,26 @@ where salary <=(select max(salary) -- 최대월급이하
 -- 직원번호(employee_id), 이름(first_name), 월급(salary)
 select employee_id,
        first_name,
-       salary
+       salary,
+        avg(salary) asalary,
+        max(salary) msalary
 from employees
-order by salary asc;
+where salary 
+group by asalary 
+order by msalary asc;
 
-select employee_id,
-       first_name,
-       salary
-from employees
-group by salary 
-having avg(salary) < salary > max(salary);
 
 -- 합치기
 select employee_id,
        first_name,
-       salary
+       salary,
+       avg(salary) ,
+       max(salary) 
 from employees
-where salary in (select avg(salary) 평균월급,
-						max(salary) 최대월급
-						from employees
-						order by salary asc);
+where salary >= (select avg(salary)from employees) 
+and salary <= (select max(salary)from employees)
+group by employee_id
+order by salary asc ;
 
 /*문제3.---------------------------------------------------------------------
 직원중 Steven(first_name) king(last_name)이 소속된 부서(departments)가 있는 곳의 주소
@@ -77,10 +81,22 @@ select location_id,
        city,
        state_province,
        country_id
-from locations 
-where location_id like 1700;
+from locations right outer join departments
+				     on location_id = location_id
+                     where department_id=90;
 -- 합치기
-
+select 	l.location_id
+		,street_address
+        ,postal_code
+        ,city
+        ,state_province
+        ,country_id
+from locations l right outer join departments d
+				on l.location_id = d.location_id
+where department_id = (select department_id
+						from employees
+						where first_name = 'Steven'
+						and last_name = 'king');
 
 /*문제4.-----------------------------------------------------------------
 job_id 가 'ST_MAN' 인 직원의 월급보다 작은 직원의 사번,이름,월급을 월급의 내림차순으로
@@ -155,27 +171,34 @@ order by salary desc;
 (19건)----------------------------------------------------------*/
 
 -- 1. 각 업무(job) 별로 월급(salary)의 총합
-select job_title
-from jobs
-group by job_title;
-
-select job_id
-from jobs
+select job_id,
+       sum(salary)
+from employees
 group by job_id;
 
-select sum(salary)
-from employees;
 -- 2. 월급 총합이 가장 높은 업무부터 업무명(job_title)과 월급 총합 (내림차순)
+select j.job_title,
+       j.job_id 
+from jobs j left outer join employees e
+               on j.job_id = e.job_id;
+               
+select j.job_title
+from jobs j left outer join employees e
+               on j.job_id = e.job_id,(select job_id,
+                                       sum(salary) Ssalary
+			                           from employees
+                                       group by job_id) s
+		where j.job_id = s.job_id
+order by Ssalary desc;
 
-select job_title
-from jobs
-group by job_title in (select sum(salary)
-                       from employees);
-select sum(salary)
-from employees
-where salary in (select job_title
-                 from jobs
-                 group by job_title);
+select j.job_title
+		,s.sSalary
+from jobs j ,(select job_id
+					,sum(salary) sSalary
+					from employees
+					group by job_id) s
+where j.job_id = s.job_id
+order by sSalary desc;
 
 
 /*문제7.
@@ -183,22 +206,23 @@ where salary in (select job_title
 (first_name)과 월급(salary)을 조회하세요
 (38건)*/
 
-
-select count(salary)
-from employees
-where salary <= (select avg(salary)
-				from employees);
-select department_id, 
+-- 자신의 부서 평균 월급
+select department_id,
        avg(salary)
 from employees
 group by department_id;
 
+-- 자신의 부서 평균 월급보다 월급이 많은 직원의 직원번호,이름,월급
+
 select employee_id,
        first_name,
-       count(salary)
-from employees
-where salary>=(select avg(salary)
-				from employees);
+       salary
+from employees e , (select department_id
+				,avg(salary) aSalary
+				from employees
+				group by department_id) a
+where e.department_id = a.department_id
+and e.salary > a.aSalary;
 
 /*문제8.
 직원 입사일이 11번째에서 15번째의 직원의 사번, 이름, 월급, 입사일을 입사일 순서로 출력
@@ -211,11 +235,3 @@ select employee_id,
 from employees
 order by hire_date asc
 limit 10,5;
-
-
-
-
-
-
-
-
