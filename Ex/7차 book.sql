@@ -1,7 +1,7 @@
 -- 작가 테이블 만들기
 create table author (
     author_id   int  auto_increment   primary key, -- not null + unique
-    author_name varchar(100) not null,
+    author_name varchar(100) ,
     author_desc varchar(500)
 );
 -- 작가등록
@@ -47,40 +47,32 @@ select * from book;
 
 -- 책등록
 insert into book
-values(null,'우리들의 일그러진 영웅','다림','1998-02-22',null);
-
--- 책삭제
-delete from book
-where book_id=11;
-
--- 책수정
-/*update book 
-set book_id =,
-    title =,
-    pubs =,
-    pub_date =
-where author_id = ;*/
-
---  작가
-insert into author
-value(null,'오지원','학생');
+value(null, '우리들의 일그러진 영웅','다림','1998-02-22' ,1);
 
 select *
-from author;
+from book b
+left join author a on b.author_id = a.author_id
+order by book_id asc;
 
 select *
 from book;
 
-delete from author
-where author_id=9;
+-- 책삭제
+delete from book
+where book_id = 11;
 
-select author_id,
-       author_name,
-       author_desc
-from author;
+-- 책수정
+update book
+set title = '기안84',
+	pubs = '웹툰작가',
+	pub_date = '2024-05-01',
+	author_id = 6
+where book_id = 7;
 
-update author 
-set author_name = '기안84', 
-    author_desc = '웹툰작가'
-where author_id = 3
-;
+
+select book_id, 
+	   title, 
+       pubs,
+       pub_date, 
+       author_id 
+from book ;

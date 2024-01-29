@@ -26,12 +26,13 @@ insert into author values(5,'강풀','온라인 만화가 1세대');
 insert into author values(6,'김영하','알뜰신잡'); 
 select * from author;
 
+-- 작가등록
 insert into author
 value(null,'오지원','학생');
 
 select *
 from author;
-
+-- 작가삭제
 delete from author
 where author_id=9;
 
@@ -39,7 +40,7 @@ select author_id,
        author_name,
        author_desc
 from author;
-
+-- 작가수정
 update author 
 set author_name = '기안84', 
     author_desc = '웹툰작가'

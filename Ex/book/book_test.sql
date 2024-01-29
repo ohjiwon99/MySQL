@@ -11,9 +11,9 @@ grant all privileges on book_db.* to 'book'@'%' ;
 
 -- book_db 데이터베이스 생성 쿼리문
 create database book_db
-	default character set utf8mb4 -- 이모티콘 사용 케릭터셋
-    collate utf8mb4_general_ci -- 정렬규칙
-    default encryption='n'; -- 암호화 no(기본값이라 생략가능. 굳이 안써도됨)
+    default character set utf8mb4
+    collate utf8mb4_general_ci
+    default encryption= 'n';
 
 show databases;
 
@@ -25,7 +25,7 @@ show databases;
 -- 작가 테이블 만들기
 create table author (
     author_id   int auto_increment  primary key, -- not null + unique
-    author_name varchar(100) not null,
+    author_name varchar(100) ,
     author_desc varchar(500));
 
 -- 책 테이블 만들기
@@ -88,14 +88,13 @@ select 	b.book_id
         ,a.author_id 
         ,a.author_name
         ,a.author_desc
-from book b, author a
-where b.author_id = a.author_id 
--- INSERT INTO 테이블명 (컬럼명) VALUES (NULL)
--- and b.author_id  is not null
+from book b
+
+left outer join author a
+	 on b.author_id = a.author_id 
 order by title desc;
 
-select *
-from book b, author a;
+
 
 
 
