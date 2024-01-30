@@ -69,10 +69,26 @@ set title = '기안84',
 	author_id = 6
 where book_id = 7;
 
-
+-- 책 select
 select book_id, 
 	   title, 
        pubs,
-       pub_date, 
+       date_format(pub_date, '%Y년   %m월   %d일')pub_date, 
        author_id 
 from book ;
+
+
+
+select 	b.book_id
+		,b.title
+		,b.pubs
+        ,date_format(b.pub_date, '%Y년   %m월   %d일') pub_date
+        ,b.author_id 
+        ,a.author_id 
+        ,a.author_name
+        ,a.author_desc
+from book b
+
+left outer join author a
+	 on b.author_id = a.author_id 
+order by title desc;
